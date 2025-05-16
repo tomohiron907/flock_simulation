@@ -8,6 +8,7 @@ class Fish {
         this.maxForce = 0.1;
         this.size = 10;
         this.time = random(0, 1000); // 時間の初期値をランダムに設定
+        this.maxSpeed = 5; // 最大速度を追加
     }
 
     // 群れの動きを制御する3つのルール
@@ -101,18 +102,37 @@ class Fish {
         return steering;
     }
 
+    avoidPredator() {
+        let mousePos = createVector(mouseX, mouseY);
+        let desired = p5.Vector.sub(this.position, mousePos);
+        let d = desired.mag();
+        
+        // マウスとの距離が200ピクセル以内の場合のみ反応
+        if (d < 200) {
+            desired.normalize();
+            desired.mult(this.maxSpeed);
+            let steer = p5.Vector.sub(desired, this.velocity);
+            steer.limit(this.maxForce * 2); // 通常の2倍の力で逃げる
+            return steer;
+        }
+        return createVector(0, 0);
+    }
+
     flock(fishes) {
         let alignment = this.align(fishes);
         let cohesion = this.cohesion(fishes);
         let separation = this.separation(fishes);
+        let predatorAvoidance = this.avoidPredator();
 
         alignment.mult(0.5);
         cohesion.mult(0.5);
         separation.mult(0.8);
+        predatorAvoidance.mult(1.5); // 捕食者からの逃避を優先
 
         this.acceleration.add(alignment);
         this.acceleration.add(cohesion);
         this.acceleration.add(separation);
+        this.acceleration.add(predatorAvoidance);
     }
 
     update() {
