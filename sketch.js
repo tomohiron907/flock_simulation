@@ -6,6 +6,7 @@ class Fish {
         this.maxSpeed = 2;
         this.maxForce = 0.1;
         this.size = 10;
+        this.time = random(0, 1000); // 時間の初期値をランダムに設定
     }
 
     // 群れの動きを制御する3つのルール
@@ -145,10 +146,15 @@ class Fish {
         push();
         rotate(PI/2);  // -90度回転
         
+        // 時間に基づいて係数を変化させる
+        let t = (this.time % 60) / 60; // 1秒（60フレーム）で1周期
+        let coefficient = map(sin(t * TWO_PI), -1, 1, 0.2, 1); // 0.1から1の範囲で振動
+        
         // 二次関数の曲線を描画
         beginShape();
-        for (let x = -3; x <= 3; x += 0.1) {
-            let y = x * x;  // y = x^2
+        let xRange = sqrt(9 / coefficient); // y=9になるxの範囲を計算
+        for (let x = -xRange; x <= xRange; x += 0.1) {
+            let y = coefficient * x * x;  // y = ax^2
             // スケーリングと位置調整
             let scaledX = x * (this.size / 3);
             let scaledY = y * (this.size / 3);
@@ -159,6 +165,9 @@ class Fish {
         pop();
         
         pop();
+        
+        // 時間を更新（1フレームごとに1増加）
+        this.time += 1;
     }
 }
 
