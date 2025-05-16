@@ -103,17 +103,20 @@ class Fish {
     }
 
     avoidPredator() {
-        let mousePos = createVector(mouseX, mouseY);
-        let desired = p5.Vector.sub(this.position, mousePos);
-        let d = desired.mag();
-        
-        // マウスとの距離が200ピクセル以内の場合のみ反応
-        if (d < 200) {
-            desired.normalize();
-            desired.mult(this.maxSpeed);
-            let steer = p5.Vector.sub(desired, this.velocity);
-            steer.limit(this.maxForce * 2); // 通常の2倍の力で逃げる
-            return steer;
+        // マウスがウィンドウ内にある場合のみ反応
+        if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+            let mousePos = createVector(mouseX, mouseY);
+            let desired = p5.Vector.sub(this.position, mousePos);
+            let d = desired.mag();
+            
+            // マウスとの距離が200ピクセル以内の場合のみ反応
+            if (d < 200) {
+                desired.normalize();
+                desired.mult(this.maxSpeed);
+                let steer = p5.Vector.sub(desired, this.velocity);
+                steer.limit(this.maxForce * 2); // 通常の2倍の力で逃げる
+                return steer;
+            }
         }
         return createVector(0, 0);
     }
