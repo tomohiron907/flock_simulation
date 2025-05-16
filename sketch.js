@@ -55,7 +55,7 @@ class Fish {
     }
 
     separation(fishes) {
-        let perceptionRadius = 30;
+        let perceptionRadius = 35;
         let steering = createVector();
         let total = 0;
 
@@ -110,13 +110,32 @@ class Fish {
         translate(this.position.x, this.position.y);
         rotate(this.velocity.heading());
         
-        // 魚の本体（長細い楕円）
-        // circle(0, 0, this.size+10);
+        // 魚の本体（円）
         fill(255, 200, 200);
         noStroke();
         ellipse(0, 0, this.size, this.size);
         
+        // 尾びれ（二次関数の曲線）
+        stroke(255, 150, 150);
+        strokeWeight(2);
+        noFill();
         
+        // 尾びれを-90度回転
+        push();
+        rotate(PI/2);  // -90度回転
+        
+        // 二次関数の曲線を描画
+        beginShape();
+        for (let x = -3; x <= 3; x += 0.1) {
+            let y = x * x;  // y = x^2
+            // スケーリングと位置調整
+            let scaledX = x * (this.size / 3);
+            let scaledY = y * (this.size / 3);
+            vertex(scaledX, scaledY);
+        }
+        endShape();
+        
+        pop();
         
         pop();
     }
