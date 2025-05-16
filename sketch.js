@@ -3,8 +3,8 @@ class Fish {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 4;
-        this.maxForce = 0.2;
+        this.maxSpeed = 2;
+        this.maxForce = 0.1;
         this.size = 10;
     }
 
@@ -32,7 +32,7 @@ class Fish {
     }
 
     cohesion(fishes) {
-        let perceptionRadius = 50;
+        let perceptionRadius = 100;
         let steering = createVector();
         let total = 0;
 
@@ -83,9 +83,9 @@ class Fish {
         let cohesion = this.cohesion(fishes);
         let separation = this.separation(fishes);
 
-        alignment.mult(1.0);
-        cohesion.mult(1.0);
-        separation.mult(1.5);
+        alignment.mult(0.5);
+        cohesion.mult(0.5);
+        separation.mult(0.8);
 
         this.acceleration.add(alignment);
         this.acceleration.add(cohesion);
@@ -93,9 +93,9 @@ class Fish {
     }
 
     update() {
-        this.position.add(this.velocity);
         this.velocity.add(this.acceleration);
         this.velocity.limit(this.maxSpeed);
+        this.position.add(this.velocity);
         this.acceleration.mult(0);
 
         // 画面端での折り返し
@@ -110,22 +110,13 @@ class Fish {
         translate(this.position.x, this.position.y);
         rotate(this.velocity.heading());
         
-        // 魚の形を描画
-        fill(255, 200, 0);
+        // 魚の本体（長細い楕円）
+        // circle(0, 0, this.size+10);
+        fill(255, 200, 200);
         noStroke();
-        beginShape();
-        vertex(this.size, 0);
-        vertex(-this.size/2, -this.size/2);
-        vertex(-this.size/2, this.size/2);
-        endShape(CLOSE);
+        ellipse(0, 0, this.size, this.size);
         
-        // 尾びれ
-        fill(255, 150, 0);
-        beginShape();
-        vertex(-this.size/2, 0);
-        vertex(-this.size, -this.size);
-        vertex(-this.size, this.size);
-        endShape(CLOSE);
+        
         
         pop();
     }
@@ -142,7 +133,7 @@ function setup() {
 }
 
 function draw() {
-    background(0, 50, 100);
+    background(20, 20, 20);
     
     for (let fish of fishes) {
         fish.flock(fishes);
