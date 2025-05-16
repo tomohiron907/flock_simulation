@@ -3,7 +3,8 @@ class Fish {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 2;
+        this.baseSpeed = 1;  // 基本速度
+        this.currentSpeed = this.baseSpeed;  // 現在の速度
         this.maxForce = 0.1;
         this.size = 10;
         this.time = random(0, 1000); // 時間の初期値をランダムに設定
@@ -115,8 +116,13 @@ class Fish {
     }
 
     update() {
+        // 尾鰭の係数に基づいて速度を調整
+        let t = (this.time % 60) / 60;
+        let coefficient = map(sin(t * TWO_PI), -1, 1, 0.2, 1);
+        this.currentSpeed = this.baseSpeed * (0.7+ coefficient );  // 係数が大きい時は速く、小さい時は遅く
+
         this.velocity.add(this.acceleration);
-        this.velocity.limit(this.maxSpeed);
+        this.velocity.setMag(this.currentSpeed);  // 現在の速度を適用
         this.position.add(this.velocity);
         this.acceleration.mult(0);
 
@@ -148,7 +154,7 @@ class Fish {
         
         // 時間に基づいて係数を変化させる
         let t = (this.time % 60) / 60; // 1秒（60フレーム）で1周期
-        let coefficient = map(sin(t * TWO_PI), -1, 1, 0.2, 1); // 0.1から1の範囲で振動
+        let coefficient = map(sin(t * TWO_PI), -1, 1, 0.1, 1); // 0.1から1の範囲で振動
         
         // 二次関数の曲線を描画
         beginShape();
