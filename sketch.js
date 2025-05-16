@@ -54,8 +54,23 @@ class Fish {
         return steering;
     }
 
+    // 点が尾びれの領域内にあるかチェック
+    isInFinArea(point) {
+        // 魚の位置を原点とした相対座標に変換
+        let relativePoint = p5.Vector.sub(point, this.position);
+        // 魚の向きに合わせて回転
+        let angle = -this.velocity.heading();
+        let rotatedX = relativePoint.x * cos(angle) - relativePoint.y * sin(angle);
+        let rotatedY = relativePoint.x * sin(angle) + relativePoint.y * cos(angle);
+        
+        // 尾びれの領域チェック (y > x² かつ y < 9)
+        let scaledX = rotatedX / (this.size / 3);
+        let scaledY = rotatedY / (this.size / 3);
+        return scaledY > scaledX * scaledX && scaledY < 9;
+    }
+
     separation(fishes) {
-        let perceptionRadius = 35;
+        let perceptionRadius = 45;
         let steering = createVector();
         let total = 0;
 
@@ -63,6 +78,12 @@ class Fish {
             let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
             if (other != this && d < perceptionRadius) {
                 let diff = p5.Vector.sub(this.position, other.position);
+                
+                // 尾びれの領域内にある場合は、より強い反発力を与える
+                if (this.isInFinArea(other.position)) {
+                    diff.mult(4.0);  // 反発力を2倍に
+                }
+                
                 diff.div(d * d);
                 steering.add(diff);
                 total++;
