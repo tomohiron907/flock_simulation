@@ -3,7 +3,7 @@ class Fish {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.baseSpeed = 1;  // 基本速度
+        this.baseSpeed = 0.7;  // 基本速度
         this.currentSpeed = this.baseSpeed;  // 現在の速度
         this.maxForce = 0.1;
         this.size = 10;
@@ -139,7 +139,7 @@ class Fish {
         // 尾鰭の係数に基づいて速度を調整
         let t = (this.time % 60) / 60;
         let coefficient = map(sin(t * TWO_PI), -1, 1, 0.2, 1);
-        this.currentSpeed = this.baseSpeed * (0.7+ coefficient );  // 係数が大きい時は速く、小さい時は遅く
+        this.currentSpeed = this.baseSpeed * (0.7 + coefficient*1.3 );  // 係数が大きい時は速く、小さい時は遅く
 
         this.velocity.add(this.acceleration);
         this.velocity.setMag(this.currentSpeed);  // 現在の速度を適用
