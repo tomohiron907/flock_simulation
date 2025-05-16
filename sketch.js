@@ -138,13 +138,10 @@ class Fish {
         translate(this.position.x, this.position.y);
         rotate(this.velocity.heading());
         
-        // 魚の本体（円）
-        fill(255, 200, 200);
-        noStroke();
-        ellipse(0, 0, this.size, this.size);
+        
         
         // 尾びれ（二次関数の曲線）
-        stroke(255, 150, 150);
+        stroke(80, 80, 80);
         strokeWeight(2);
         noFill();
         
@@ -167,7 +164,10 @@ class Fish {
             vertex(scaledX, scaledY);
         }
         endShape();
-        
+        // 魚の本体（円）
+        fill(255, 200, 200);
+        noStroke();
+        ellipse(0, 0, this.size, this.size);
         pop();
         
         pop();
