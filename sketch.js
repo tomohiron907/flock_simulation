@@ -161,10 +161,8 @@ class Fish {
         translate(this.position.x, this.position.y);
         rotate(this.velocity.heading());
         
-        
-        
         // 尾びれ（二次関数の曲線）
-        stroke(80, 80, 80);
+        stroke(80, 80, 80, 160); // 尾びれにも透明度を追加
         strokeWeight(2);
         noFill();
         
@@ -188,7 +186,7 @@ class Fish {
         }
         endShape();
         // 魚の本体（円）
-        fill(255, 200, 200);
+        fill(255, 200, 200, 160); // 透明度を180に設定（0-255の範囲、小さいほど透明）
         noStroke();
         ellipse(0, 0, this.size, this.size);
         pop();
@@ -202,16 +200,36 @@ class Fish {
 
 let fishes = [];
 const numFishes = 100;
+let bgImage; // 背景画像用の変数を追加
+let processedBgImage; // 処理済みの背景画像用の変数を追加
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    // 背景画像を読み込む
+    bgImage = loadImage('https://raw.githubusercontent.com/tomohiron907/flock_simulation/main/background.jpg', () => {
+        // 画像読み込み完了後に処理を実行
+        processedBgImage = createImage(width, height);
+        processedBgImage.copy(bgImage, 0, 0, bgImage.width, bgImage.height, 0, 0, width, height);
+        processedBgImage.loadPixels();
+        // 画像を暗くする処理
+        for (let i = 0; i < processedBgImage.pixels.length; i += 4) {
+            processedBgImage.pixels[i] *= 0.6;     // R
+            processedBgImage.pixels[i + 1] *= 0.6; // G
+            processedBgImage.pixels[i + 2] *= 0.6; // B
+        }
+        processedBgImage.updatePixels();
+    });
+    
     for (let i = 0; i < numFishes; i++) {
         fishes.push(new Fish());
     }
 }
 
 function draw() {
-    background(20, 20, 20);
+    // 処理済みの背景画像を表示
+    if (processedBgImage) {
+        image(processedBgImage, 0, 0);
+    }
     
     for (let fish of fishes) {
         fish.flock(fishes);
