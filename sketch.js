@@ -226,6 +226,7 @@ function setup() {
 }
 
 function draw() {
+    clear();  // 前のフレームの描画内容をクリア
     // 処理済みの背景画像を表示
     if (processedBgImage) {
         image(processedBgImage, 0, 0);
